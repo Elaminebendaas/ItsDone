@@ -39,7 +39,7 @@ export default function Signup(){
     <input type='email' id='email' placeholder='johndoe@example.com' name='email' onChange={emailValidate} required/> <br></br>
     {emailStatus ? <p>Email is good</p> : <p>Invalid Email</p>}
     <label>password:</label>
-    <input type='text'placeholder='helloworld123' onChange={passwordValidate} required/><br></br>
+    <input type='password'placeholder='helloworld123' onChange={passwordValidate} required/><br></br>
     {passwordStatus ? <p>Password is good</p> : <p>Not Strong enough</p>}
     <button onClick={formValidate}>Sign Up</button>
     </form>
