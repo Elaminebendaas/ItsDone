@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import validator from 'validator';
-import { redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Signup.css';
 
 export default function Signup(){
+    const navigate = useNavigate();
     const [user, setUser] = useState(
         {
         email: "", 
@@ -29,17 +30,22 @@ export default function Signup(){
             changePassStatus(true);
         }
     }
+
     async function formValidate(e){
         e.preventDefault();
-        const response = await fetch('http://localhost:5000/signup',{
-            method: "POST",
-            body: JSON.stringify(user),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        const result = await response.json();
-        console.log(result)
+        if(passwordStatus && emailStatus){
+            await fetch('http://localhost:5000/signup',{
+                method: "POST",
+                body: JSON.stringify(user),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            return navigate('/login');
+        }else{  
+            console.log("Email & Password combination invalid");
+        }
+        
     }
     
     return(<>
@@ -48,7 +54,7 @@ export default function Signup(){
     <input type='email' id='email' placeholder='johndoe@example.com' name='email' onChange={emailValidate} required/> <br></br>
     {emailStatus ? <p>Email is good</p> : <p>Invalid Email</p>}
     <label>password:</label>
-    <input type='password'placeholder='helloworld123' onChange={passwordValidate} required/><br></br>
+    <input type='password'placeholder='your password' onChange={passwordValidate} required/><br></br>
     {passwordStatus ? <p>Password is good</p> : <p>Not Strong enough</p>}
     <button onClick={formValidate}>Sign Up</button>
     </form>

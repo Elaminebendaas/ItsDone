@@ -5,10 +5,12 @@ if(process.env.NODE_ENV !== "production"){
 
 const express = require('express');
 const app = express();
+const bcrypt = require('bcryptjs')
 const mongoose = require('mongoose');
 const passport = require('passport');
 const session = require('express-session');
 const cors = require('cors');
+const User = require('./models/Users.js');
 
 app.use(cors());
 app.use(express.urlencoded({extended: true}));
@@ -26,9 +28,17 @@ async function main(){
 }
 
 app.post('/signup', (req, res) => {
-    console.log(req.body.email)
-    res.json({status: "good"})
+    bcrypt.hash(req.body.password, 10, async(err, hashedPassword) =>{
+        if(err){
+            console.log(err);
+            res.json({message: "error"});
+        }else{
+            const newUser = new User({email: req.body.email, password: hashedPassword});
+            await newUser.save();
+            res.json({message: "success"});
+        }
 
+    }); 
 })
 
 app.listen(5000, () => {
