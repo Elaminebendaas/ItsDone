@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import validator from 'validator';
+import { redirect } from 'react-router-dom';
 import './Signup.css';
 
 export default function Signup(){
@@ -28,9 +29,17 @@ export default function Signup(){
             changePassStatus(true);
         }
     }
-    function formValidate(e){
+    async function formValidate(e){
         e.preventDefault();
-        console.log(user)
+        const response = await fetch('http://localhost:5000/signup',{
+            method: "POST",
+            body: JSON.stringify(user),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const result = await response.json();
+        console.log(result)
     }
     
     return(<>
