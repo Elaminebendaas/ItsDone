@@ -1,7 +1,7 @@
-const dotenv = require('dotenv')
-if(process.env.NODE_ENV !== "production"){
+require('dotenv').config()
+/* if(process.env.NODE_ENV !== "production"){
     dotenv.config();
-}
+} */
 
 const express = require('express');
 const app = express();
@@ -38,14 +38,41 @@ passport.use(
             if(!user){
                 return done(null, false, {message: "Incorrect username"})
             };
+
             bcrypt.compare(password, user.password, (err, res) => {
                 if(res){
                     return done(null, user)
+                }else{
+                    return done(null, false, {message: "Incorrect Password"});
                 }
             })
+        }catch(err){
+            return done(err);
+
         }
     })
 )
+
+passport.serializeUser(function(user, done){
+    done(null, user.id)
+})
+
+passport.deserializeUser(async function(id, done) {
+    try {
+      const user = await User.findById(id);
+      done(null, user);
+    } catch(err) {
+      done(err);
+    };
+  });
+
+app.get('/', (req, res) => {
+    res.json({message: "hello"})
+})
+
+app.get('/signup', (req, res) => {
+    res.json({message: 'hello'})
+})
 
 app.post('/signup', (req, res) => {
     bcrypt.hash(req.body.password, 10, async(err, hashedPassword) =>{
@@ -57,11 +84,17 @@ app.post('/signup', (req, res) => {
             await newUser.save();
             res.json({message: "success"});
         }
-
     }); 
 })
 
-app.post('/login', async (req,res))
+app.post('/login', passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/signup"
+}))
+
+app.get('/login', (req, res) => {
+    res.json({message: "Hello"})
+})
 
 app.listen(5000, () => {
     console.log("The server is running on port 5000");
