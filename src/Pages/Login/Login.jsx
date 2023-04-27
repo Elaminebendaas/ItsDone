@@ -9,10 +9,21 @@ export default function Login(){
     })
 
 
-    function userLogin(){
+    async function userLogin(e){
+        e.preventDefault();
+        console.log(JSON.stringify(user))
+        const response = await fetch('http://localhost:5000/login',{
+                method: "POST",
+                body: JSON.stringify(user),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
 
-    }
+        })
+        console.log(response)
 
+    
+}
 
 
 
