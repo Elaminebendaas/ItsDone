@@ -1,8 +1,12 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import './Login.css'
-
+import { useDispatch } from 'react-redux'
+import { addUser } from '../../GlobalState/LoggedInUser';
 
 export default function Login(){
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [user, setUser] = useState({
         email: "",
         password: ""
@@ -11,19 +15,21 @@ export default function Login(){
 
     async function userLogin(e){
         e.preventDefault();
-        console.log(JSON.stringify(user))
         const response = await fetch('http://localhost:5000/login',{
-                method: "POST",
-                body: JSON.stringify(user),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+            method: "POST",
+            body: JSON.stringify(user),
+            headers: {
+                'Content-Type': 'application/json'
+            }
 
         })
-        console.log(response)
-
-    
-}
+        const userID = JSON.stringify(await response.json())
+        console.log(JSON.parse(userID))
+       
+  
+        dispatch(addUser(userID.userID))
+        navigate('/')
+    }
 
 
 

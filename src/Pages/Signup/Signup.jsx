@@ -10,6 +10,7 @@ export default function Signup(){
         email: "", 
         password: ""
     })
+    
     const [passwordStatus, changePassStatus] = useState();
     const [emailStatus, changeEmailStatus] = useState();
 
