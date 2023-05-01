@@ -24,10 +24,10 @@ export default function Login(){
 
         })
         const userID = JSON.stringify(await response.json())
-        console.log(JSON.parse(userID))
-       
-  
-        dispatch(addUser(userID.userID))
+        const parsed = JSON.parse(userID)
+
+      
+        dispatch(addUser(parsed.userID))
         navigate('/')
     }
 
